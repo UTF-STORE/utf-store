@@ -1,0 +1,27 @@
+{
+	# Railway terminates TLS at the edge; this server only speaks plain HTTP.
+	auto_https off
+	admin off
+}
+
+:{$PORT:3000} {
+	encode gzip zstd
+
+	# The SPA calls the API through VITE_API_URL=/api. Nest serves its routes at
+	# the root, so the prefix is stripped here.
+	handle_path /api/* {
+		reverse_proxy {$BACKEND_URL:http://backend.railway.internal:3000}
+	}
+
+	# Real Nest paths — proxied without stripping anything.
+	@backend path /uploads/* /docs /docs/* /socket.io/*
+	handle @backend {
+		reverse_proxy {$BACKEND_URL:http://backend.railway.internal:3000}
+	}
+
+	handle {
+		root * /app/dist
+		try_files {path} /index.html
+		file_server
+	}
+}
