@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineOptions({ name: 'PrivateViewLayout' })
 
-import { onBeforeMount, ref } from 'vue'
+import { ref } from 'vue'
 
 import Navbar from '@/components/private/Navbar.vue'
 import Sidebar from '@/components/private/Sidebar.vue'
@@ -17,22 +17,18 @@ const navigation = [
   {
     label: 'Usuários',
     icon: 'pi pi-users',
-    to: '/app/users',
+    to: '/admin/users',
   },
   {
     label: 'Anúncios',
     icon: 'pi pi-bell',
-    to: '/app/ads',
+    to: '/admin/ads',
   },
 ]
 
 function logout() {
   authStore.$reset()
 }
-
-onBeforeMount(() => {
-  userStore.actMe()
-})
 </script>
 
 <template>
