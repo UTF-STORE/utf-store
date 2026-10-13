@@ -57,7 +57,7 @@ onBeforeMount(() => {
       </div>
 
       <main class="flex-1 space-y-6 p-4">
-        <slot />
+        <slot/>
         <router-view />
       </main>
     </div>

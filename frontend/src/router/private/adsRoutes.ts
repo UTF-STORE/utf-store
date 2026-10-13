@@ -1,10 +1,14 @@
 import type { RouteRecordRaw } from 'vue-router'
-import PrivateAds from '@/views/PrivateView/Ads/index.vue'
 
 export default [
   {
     path: 'ads',
     name: 'private.ads',
-    component: PrivateAds,
+    component: () => import('@/views/PrivateView/AdsListView.vue'),
+  },
+  {
+    path: 'ads/create',
+    name: 'private.ads.create',
+    component: () => import('@/views/PrivateView/CreateAdView.vue'), // Ou crie um CreateAdView.vue na raiz também
   },
 ] as Array<RouteRecordRaw>
