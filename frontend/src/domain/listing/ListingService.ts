@@ -1,18 +1,19 @@
 import type { AxiosPromise } from 'axios'
-
 import ListingRepository from '@/domain/listing/ListingRepository'
-import type ListingFindAllResInterface from '@/domain/listing/types/res/ListingFindAllResInterface'
-import type ListingFindOneResInterface from '@/domain/listing/types/res/ListingFindOneResInterface'
 
 export default class ListingService {
   constructor(private _repository: ListingRepository = new ListingRepository()) {}
 
-  findAll(): AxiosPromise<ListingFindAllResInterface> {
+  findAll(): AxiosPromise {
     return this._repository.findAll()
   }
 
-  findOne(id: string): AxiosPromise<ListingFindOneResInterface> {
+  findOne(id: string): AxiosPromise {
     return this._repository.findOne(id)
+  }
+
+  create(payload: Record<string, unknown>): AxiosPromise {
+    return this._repository.create(payload)
   }
 
   delete(id: string): AxiosPromise {
