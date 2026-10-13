@@ -9,6 +9,6 @@ export default [
   {
     path: 'ads/create',
     name: 'private.ads.create',
-    component: () => import('@/views/PrivateView/CreateAdView.vue'), // Ou crie um CreateAdView.vue na raiz também
+    component: () => import('@/views/PrivateView/CreateAdView.vue'),
   },
 ] as Array<RouteRecordRaw>
