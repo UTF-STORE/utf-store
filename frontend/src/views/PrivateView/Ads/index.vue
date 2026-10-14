@@ -2,6 +2,7 @@
 defineOptions({ name: 'PrivateAds' })
 
 import { computed, ref } from 'vue'
+
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 import DataView from 'primevue/dataview'
@@ -192,7 +193,7 @@ fetchListings()
       class="flex items-center justify-between bg-white rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
     >
       <h1 class="text-xl font-bold text-slate-900 tracking-tight">Anúncios</h1>
-      <router-link to="/app/ads/create">
+      <router-link :to="{ name: 'admin.ads.create' }">
         <Button label="Novo Anúncio" icon="pi pi-plus" severity="primary" class="rounded-xl" />
       </router-link>
     </header>

@@ -13,20 +13,25 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
 import Card from 'primevue/card'
+import { useUserStore } from '@/stores/user'
 
 import { useAuthStore } from '@/stores/auth'
 import type AuthSigninReqInterface from '@/domain/auth/types/req/AuthSigninReqInterface'
-import REGEX_EMAIL from '@/helpers/regex/email'
+import { isUtfprStudentEmail } from '@utf-store/shared'
 
 const toast = useToast()
 const authStore = useAuthStore()
+const userStore = useUserStore()
 const router = useRouter()
 
 const resolver = zodResolver(
   z.object({
-    email: z.string().nonempty({ error: 'Email é obrigatório' }).regex(REGEX_EMAIL, {
-      error: 'O email precisa ser institucional da UTFPR (utfpr.edu.br)',
-    }),
+    email: z
+      .string()
+      .nonempty({ error: 'Email é obrigatório' })
+      .refine((val) => isUtfprStudentEmail(val), {
+        message: 'O email precisa ser de estudante da UTFPR (@alunos.utfpr.edu.br)',
+      }),
     password: z
       .string()
       .nonempty({ error: 'Senha é obrigatória' })
@@ -37,9 +42,11 @@ const resolver = zodResolver(
 async function signin(data: AuthSigninReqInterface) {
   try {
     await authStore.actSignin(data)
+    const { me } = await userStore.actMe()
     toast.add({ severity: 'success', summary: 'Login efetuado com sucesso.', life: 3000 })
+    const destination = me.role === 'admin' ? '/admin/users' : '/app/listings'
 
-    router.replace('/app')
+    router.replace(destination)
   } catch (err) {
     if (!axios.isAxiosError(err)) return
     const errorMessage = err.response?.data?.message || 'Erro desconhecido'
@@ -103,6 +110,16 @@ function onFormSubmit({ valid, values }: FormSubmitEvent) {
           label="Acessar"
           class="w-full bg-slate-900 hover:bg-slate-800 border-none text-white rounded-xl py-3 mt-4"
         />
+
+        <div class="mt-4 text-center">
+          <span class="text-slate-600 text-sm">Não tem conta? </span>
+          <Button
+            link
+            label="Cadastre-se como estudante"
+            class="p-0 text-sm font-semibold text-slate-900"
+            @click="$router.push({ name: 'public.auth.signup' })"
+          />
+        </div>
       </Form>
     </template>
   </Card>
