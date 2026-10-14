@@ -6,5 +6,6 @@ export default [
     path: 'ads',
     name: 'private.ads',
     component: PrivateAds,
+    meta: { role: 'admin' },
   },
 ] as Array<RouteRecordRaw>
