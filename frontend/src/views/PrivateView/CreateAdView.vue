@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineOptions({ name: 'CreateAdView' })
 
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 import InputText from 'primevue/inputtext'
@@ -11,26 +11,27 @@ import Button from 'primevue/button'
 
 import { useListingStore } from '@/stores/listing'
 
-const listingStore = useListingStore()  
+const listingStore = useListingStore()
 
 const router = useRouter()
 const toast = useToast()
 
 const loading = ref(false)
+const categoriesLoading = ref(false)
 
 const form = ref({
   title: '',
   description: '',
   price: '',
   categoryId: '',
-  type: 'PRODUCT',
+  type: 'SELL',
   condition: 'NEW',
   location: '',
 })
 
 const typeOptions = [
-  { label: 'Produto', value: 'PRODUCT' },
-  { label: 'Serviço', value: 'SERVICE' },
+  { label: 'Venda', value: 'SELL' },
+  { label: 'Doação', value: 'DONATE' },
 ]
 
 const conditionOptions = [
@@ -38,17 +39,49 @@ const conditionOptions = [
   { label: 'Usado', value: 'USED' },
 ]
 
-const categoryOptions = [
-  { label: 'Eletrônicos', value: 'eletronicos-id-aqui' },
-  { label: 'Geral', value: 'geral-id-aqui' },
-]
+const categoryOptions = ref<{ label: string; value: string }[]>([])
+
+async function fetchCategories(): Promise<void> {
+  categoriesLoading.value = true
+  try {
+    const data = await listingStore.actFindAllCategories()
+    const list: { id: string; name: string }[] = Array.isArray(data)
+      ? data
+      : (data?.categories ?? [])
+    categoryOptions.value = list.map((category) => ({ label: category.name, value: category.id }))
+  } catch {
+    toast.add({
+      severity: 'error',
+      summary: 'Erro ao carregar categorias',
+      detail: 'Não foi possível carregar as categorias.',
+      life: 3000,
+    })
+  } finally {
+    categoriesLoading.value = false
+  }
+}
+
+function goToAds(): void {
+  router.push({ name: 'admin.ads' })
+}
 
 async function onSubmit(): Promise<void> {
-  if (!form.value.title || !form.value.price) {
+  if (!form.value.title || !form.value.price || !form.value.categoryId) {
     toast.add({
       severity: 'warn',
       summary: 'Campos obrigatórios',
-      detail: 'Preencha ao menos o título e o preço do anúncio.',
+      detail: 'Preencha o título, o preço e a categoria do anúncio.',
+      life: 3000,
+    })
+    return
+  }
+
+  const price = Number(String(form.value.price).replace(',', '.'))
+  if (Number.isNaN(price) || price < 0) {
+    toast.add({
+      severity: 'warn',
+      summary: 'Preço inválido',
+      detail: 'Informe um preço válido, por exemplo 59,90.',
       life: 3000,
     })
     return
@@ -56,8 +89,16 @@ async function onSubmit(): Promise<void> {
 
   loading.value = true
   try {
-    await listingStore.actCreateListing(form.value)
-    
+    await listingStore.actCreateListing({
+      categoryId: form.value.categoryId,
+      title: form.value.title,
+      description: form.value.description || undefined,
+      price: price.toFixed(2),
+      condition: form.value.condition,
+      type: form.value.type,
+      location: form.value.location || undefined,
+    })
+
     toast.add({
       severity: 'success',
       summary: 'Anúncio criado',
@@ -65,7 +106,7 @@ async function onSubmit(): Promise<void> {
       life: 3000,
     })
 
-    router.push('/app/ads')
+    goToAds()
   } catch {
     toast.add({
       severity: 'error',
@@ -77,14 +118,20 @@ async function onSubmit(): Promise<void> {
     loading.value = false
   }
 }
+
+onMounted(fetchCategories)
 </script>
 
 <template>
   <section class="max-w-3xl mx-auto space-y-6">
-    <header class="flex items-center justify-between bg-white rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100">
+    <header
+      class="flex items-center justify-between bg-white rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
+    >
       <div>
         <h1 class="text-xl font-bold text-slate-900 tracking-tight">Novo Anúncio</h1>
-        <p class="text-sm text-slate-500 mt-0.5">Preencha os dados para publicar um item ou serviço.</p>
+        <p class="text-sm text-slate-500 mt-0.5">
+          Preencha os dados para publicar um item ou serviço.
+        </p>
       </div>
       <Button
         label="Voltar"
@@ -92,13 +139,14 @@ async function onSubmit(): Promise<void> {
         severity="secondary"
         outlined
         class="rounded-xl"
-        @click="router.push('/app/ads')"
+        @click="goToAds"
       />
     </header>
 
-    <div class="bg-white rounded-2xl p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100">
+    <div
+      class="bg-white rounded-2xl p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
+    >
       <form class="space-y-5" @submit.prevent="onSubmit">
-        
         <div class="flex flex-col gap-1.5">
           <label for="title" class="text-sm font-semibold text-slate-700">Título do Anúncio</label>
           <InputText
@@ -117,6 +165,7 @@ async function onSubmit(): Promise<void> {
               v-model="form.price"
               type="number"
               step="0.01"
+              min="0"
               placeholder="0,00"
               class="w-full rounded-xl bg-slate-50 border-slate-200 px-4 py-3 text-slate-700"
             />
@@ -128,6 +177,7 @@ async function onSubmit(): Promise<void> {
               id="category"
               v-model="form.categoryId"
               :options="categoryOptions"
+              :loading="categoriesLoading"
               option-label="label"
               option-value="value"
               placeholder="Selecione a categoria"
@@ -184,13 +234,7 @@ async function onSubmit(): Promise<void> {
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-          <Button
-            type="button"
-            label="Cancelar"
-            severity="secondary"
-            text
-            @click="router.push('/app/ads')"
-          />
+          <Button type="button" label="Cancelar" severity="secondary" text @click="goToAds" />
           <Button
             type="submit"
             label="Salvar Anúncio"
@@ -199,7 +243,6 @@ async function onSubmit(): Promise<void> {
             class="rounded-xl px-6"
           />
         </div>
-
       </form>
     </div>
   </section>

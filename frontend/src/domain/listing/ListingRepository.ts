@@ -15,6 +15,10 @@ export default class ListingRepository extends BaseRepository {
     return this._httpClient.getBackClient().get(`/${this._model.name}/${id}`)
   }
 
+  findCategories(): AxiosPromise {
+    return this._httpClient.getBackClient().get('/categories')
+  }
+
   create(payload: Record<string, unknown>): AxiosPromise {
     return this._httpClient.getBackClient().post(`/${this._model.name}`, payload)
   }

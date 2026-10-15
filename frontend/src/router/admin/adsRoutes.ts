@@ -13,4 +13,3 @@ export default [
     component: () => import('@/views/PrivateView/CreateAdView.vue'),
   },
 ] as Array<RouteRecordRaw>
-  
