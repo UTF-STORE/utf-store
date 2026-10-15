@@ -17,12 +17,12 @@ const adminNavigation = [
   {
     label: 'Usuários',
     icon: 'pi pi-users',
-    to: '/app/users',
+    to: '/admin/users',
   },
   {
     label: 'Anúncios',
     icon: 'pi pi-bell',
-    to: '/app/ads',
+    to: '/admin/ads',
   },
 ]
 
