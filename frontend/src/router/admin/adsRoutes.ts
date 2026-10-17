@@ -7,4 +7,9 @@ export default [
     name: 'admin.ads',
     component: PrivateAds,
   },
+  {
+    path: 'ads/create',
+    name: 'admin.ads.create',
+    component: () => import('@/views/PrivateView/CreateAdView.vue'),
+  },
 ] as Array<RouteRecordRaw>
