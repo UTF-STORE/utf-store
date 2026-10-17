@@ -65,9 +65,10 @@ function confirmLogout(event: Event) {
     <div class="flex h-full flex-col">
       <div class="p-6">
         <h2 class="text-xl font-bold text-slate-900 tracking-tight">{{ title }}</h2>
+        <p v-if="subtitle" class="mt-1 text-sm text-slate-500">{{ subtitle }}</p>
       </div>
 
-      <div class="px-5 mb-2 hidden">
+      <div class="px-5 mb-4">
         <CardUser :user="props.user" />
       </div>
 
@@ -89,7 +90,7 @@ function confirmLogout(event: Event) {
                 : 'bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
             "
           >
-            <!-- Não renderizamos os ícones se não houver no print, mas os manteremos visualmente discretos -->
+            <i :class="item.icon" aria-hidden="true" />
             <span class="block">{{ item.label }}</span>
           </a>
         </RouterLink>
@@ -146,6 +147,7 @@ function confirmLogout(event: Event) {
                 : 'bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
             "
           >
+            <i :class="item.icon" aria-hidden="true" />
             <span class="block">{{ item.label }}</span>
             <span v-if="item.description" class="mt-0.5 block text-xs text-inherit/70">{{
               item.description
