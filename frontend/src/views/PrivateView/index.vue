@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineOptions({ name: 'PrivateViewLayout' })
 
-import { ref } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 
 import Navbar from '@/components/private/Navbar.vue'
 import Sidebar from '@/components/private/Sidebar.vue'
@@ -13,7 +13,7 @@ const userStore = useUserStore()
 
 const sidebarOpen = ref(false)
 
-const navigation = [
+const adminNavigation = [
   {
     label: 'Usuários',
     icon: 'pi pi-users',
@@ -26,9 +26,23 @@ const navigation = [
   },
 ]
 
+const clientNavigation = [
+  { label: 'Explorar', icon: 'pi pi-home', to: '/app/home' },
+  { label: 'Favoritos', icon: 'pi pi-heart', to: '/app/favorites' },
+  { label: 'Meu perfil', icon: 'pi pi-user-edit', to: '/app/profile' },
+]
+
+const isClient = computed(() => userStore.user?.role === 'client')
+const navigation = computed(() => (isClient.value ? clientNavigation : adminNavigation))
+const title = computed(() => (isClient.value ? 'UTF Store' : 'UTF-Store Admin'))
+
 function logout() {
   authStore.$reset()
 }
+
+onBeforeMount(() => {
+  if (!userStore.user) userStore.actMe()
+})
 </script>
 
 <template>
@@ -37,8 +51,8 @@ function logout() {
       v-model:open="sidebarOpen"
       :user="userStore.user"
       :navigation="navigation"
-      title="UTF-Store Admin"
-      subtitle=""
+      :title="title"
+      :subtitle="isClient ? 'Compra e venda entre estudantes' : ''"
       @logout="logout"
     />
 
@@ -46,7 +60,7 @@ function logout() {
       <div class="lg:hidden">
         <Navbar
           :user="userStore.user"
-          title="UTF-Store Admin"
+          :title="title"
           @menu-click="sidebarOpen = true"
           @logout="logout"
         />

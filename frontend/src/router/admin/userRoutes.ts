@@ -6,5 +6,6 @@ export default [
     path: 'users',
     name: 'admin.users',
     component: PrivateUsers,
+    meta: { role: 'admin' },
   },
 ] as Array<RouteRecordRaw>

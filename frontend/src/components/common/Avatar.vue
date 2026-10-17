@@ -3,7 +3,7 @@ defineOptions({ name: 'CompAvatar' })
 
 const props = defineProps<{
   username?: string
-  srcImg?: string
+  srcImg?: string | null
 }>()
 
 function getInitials(): string {

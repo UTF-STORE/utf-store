@@ -5,7 +5,8 @@ import { useUserStore } from '@/stores/user'
 import authRoutes from '@/router/public/authRoutes'
 import userRoutes from '@/router/admin/userRoutes'
 import adsRoutes from '@/router/admin/adsRoutes'
-import listingRoutes from './client/listingRoutes'
+import clientRoutes from '@/router/client/clientRoutes'
+import listingRoutes from '@/router/client/listingRoutes'
 
 const PublicView = () => import('@/views/PublicView/index.vue')
 const PrivateView = () => import('@/views/PrivateView/index.vue')
@@ -77,7 +78,7 @@ const router = createRouter({
         if (!(await loadAuthenticatedUser())) return { path: '/public/auth/signin', replace: true }
         if (getUserRole() === 'admin') return { path: '/admin', replace: true }
       },
-      children: [...listingRoutes],
+      children: [...listingRoutes, ...clientRoutes],
     },
 
     {
@@ -85,6 +86,26 @@ const router = createRouter({
       redirect: '/',
     },
   ],
+})
+
+router.beforeEach(async (to) => {
+  const authStore = useAuthStore()
+  if (!to.path.startsWith('/app') || !authStore.token) return
+
+  const userStore = useUserStore()
+  let user = userStore.user
+
+  if (!user) {
+    try {
+      user = (await userStore.actMe()).me
+    } catch {
+      return { path: '/', replace: true }
+    }
+  }
+
+  const defaultPath = user.role === 'client' ? '/app/home' : '/app/users'
+  if (to.path === '/app' || to.path === '/app/') return defaultPath
+  if (to.meta.role && to.meta.role !== user.role) return defaultPath
 })
 
 export default router

@@ -5,10 +5,10 @@ export default interface UserMeResInterface {
     email: string
     course: string
     campus: string
-    avatarUrl: string
+    avatarUrl: string | null
     bio: string
+    defaultUserPrompt: string
     isVerified: boolean
-
     role: 'admin' | 'client'
   }
 }

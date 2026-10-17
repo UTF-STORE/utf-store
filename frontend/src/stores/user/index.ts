@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 
 import UserService from '@/domain/user/UserService'
 import type UserMeResInterface from '@/domain/user/types/res/UserMeResInterface'
+import type UserUpdateMeReqInterface from '@/domain/user/types/req/UserUpdateMeReqInterface'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -19,6 +20,20 @@ export const useUserStore = defineStore('user', {
       } catch (err) {
         throw err
       }
+    },
+
+    async actUpdateMe(payload: UserUpdateMeReqInterface): Promise<UserMeResInterface> {
+      const USER_SERVICE = new UserService()
+      const { data } = await USER_SERVICE.updateMe(payload)
+      this.user = data.me
+      return data
+    },
+
+    async actUpdateAvatar(image: File): Promise<UserMeResInterface> {
+      const USER_SERVICE = new UserService()
+      const { data } = await USER_SERVICE.updateAvatar(image)
+      this.user = data.me
+      return data
     },
 
     async actFindAllUsers() {

@@ -6,6 +6,7 @@ export default [
     path: 'ads',
     name: 'admin.ads',
     component: PrivateAds,
+    meta: { role: 'admin' },
   },
   {
     path: 'ads/create',
