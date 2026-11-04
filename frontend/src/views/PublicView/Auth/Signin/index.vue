@@ -44,7 +44,7 @@ async function signin(data: AuthSigninReqInterface) {
     await authStore.actSignin(data)
     const { me } = await userStore.actMe()
     toast.add({ severity: 'success', summary: 'Login efetuado com sucesso.', life: 3000 })
-    const destination = me.role === 'admin' ? '/admin/users' : '/app/listings'
+    const destination = me.role === 'admin' ? '/admin/users' : '/app/home'
 
     router.replace(destination)
   } catch (err) {

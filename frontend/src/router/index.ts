@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import type { UserRoleType } from '@/domain/user/types/UserRoleType'
 import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
 
@@ -16,7 +17,7 @@ const isAuthenticated = (): boolean => {
   return !!authStore.token
 }
 
-const getUserRole = (): string | undefined => {
+const getUserRole = (): UserRoleType | undefined => {
   const userStore = useUserStore()
   return userStore.user?.role
 }
@@ -34,7 +35,7 @@ const loadAuthenticatedUser = async (): Promise<boolean> => {
 }
 
 const getHomeByRole = (): string => {
-  return getUserRole() === 'admin' ? '/admin/users' : '/app/listings'
+  return getUserRole() === 'admin' ? '/admin/users' : '/app/home'
 }
 
 const router = createRouter({
@@ -49,9 +50,6 @@ const router = createRouter({
       path: '/public',
       name: 'public',
       component: PublicView,
-      beforeEnter: () => {
-        if (isAuthenticated()) return { path: getHomeByRole(), replace: true }
-      },
       children: [...authRoutes],
     },
 
@@ -60,11 +58,7 @@ const router = createRouter({
       name: 'admin',
       component: PrivateView,
       redirect: '/admin/users',
-      beforeEnter: async () => {
-        if (!isAuthenticated()) return { path: '/public/auth/signin', replace: true }
-        if (!(await loadAuthenticatedUser())) return { path: '/public/auth/signin', replace: true }
-        if (getUserRole() !== 'admin') return { path: '/app/listings', replace: true }
-      },
+      meta: { role: 'admin' },
       children: [...userRoutes, ...adsRoutes],
     },
 
@@ -72,12 +66,8 @@ const router = createRouter({
       path: '/app',
       name: 'app',
       component: PrivateView,
-      redirect: '/app/listings',
-      beforeEnter: async (_to, _from) => {
-        if (!isAuthenticated()) return { path: '/public/auth/signin', replace: true }
-        if (!(await loadAuthenticatedUser())) return { path: '/public/auth/signin', replace: true }
-        if (getUserRole() === 'admin') return { path: '/admin', replace: true }
-      },
+      redirect: '/app/home',
+      meta: { role: 'client' },
       children: [...listingRoutes, ...clientRoutes],
     },
 
@@ -90,22 +80,30 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
-  if (!to.path.startsWith('/app') || !authStore.token) return
+  const isPublicRoute = to.path.startsWith('/public')
+  const requiresAuthentication = to.matched.some((route) => route.meta.role)
 
-  const userStore = useUserStore()
-  let user = userStore.user
-
-  if (!user) {
-    try {
-      user = (await userStore.actMe()).me
-    } catch {
-      return { path: '/', replace: true }
-    }
+  if (!authStore.token) {
+    if (requiresAuthentication) return { path: '/public/auth/signin', replace: true }
+    return
   }
 
-  const defaultPath = user.role === 'client' ? '/app/home' : '/app/users'
-  if (to.path === '/app' || to.path === '/app/') return defaultPath
-  if (to.meta.role && to.meta.role !== user.role) return defaultPath
+  if (!(await loadAuthenticatedUser())) {
+    return { path: '/public/auth/signin', replace: true }
+  }
+
+  const role = getUserRole()
+  if (!role) return { path: '/public/auth/signin', replace: true }
+
+  if (isPublicRoute) return { path: getHomeByRole(), replace: true }
+
+  const requiredRole = to.matched
+    .map((route) => route.meta.role as UserRoleType | undefined)
+    .find(Boolean)
+
+  if (requiredRole && requiredRole !== role) {
+    return { path: getHomeByRole(), replace: true }
+  }
 })
 
 export default router
