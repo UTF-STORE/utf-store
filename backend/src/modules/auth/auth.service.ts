@@ -32,7 +32,13 @@ export class AuthService {
 
     if (ambient === "admin" && user.role !== "admin") {
       throw new UnauthorizedException(
-        `Access denied. This user is a '${user.role}', not an '${ambient}'.`,
+        "Esta conta não possui permissão para acessar o painel administrativo.",
+      );
+    }
+
+    if (ambient === "client" && user.role !== "client") {
+      throw new UnauthorizedException(
+        "Esta conta não possui permissão para acessar a área do estudante.",
       );
     }
 

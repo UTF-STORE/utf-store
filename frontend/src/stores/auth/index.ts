@@ -7,6 +7,7 @@ import type AuthSignupReqInterface from '@/domain/auth/types/req/AuthSignupReqIn
 import type { AuthSignupResType } from '@/domain/auth/types/res/AuthSignupResType'
 import type AuthSigninReqInterface from '@/domain/auth/types/req/AuthSigninReqInterface'
 import type { AuthSigninResType } from '@/domain/auth/types/res/AuthSigninResType'
+import type { AuthAmbientType } from '@/domain/auth/types/AuthAmbientType'
 import { useUserStore } from '@/stores/user'
 import has from '@/helpers/validations/validator/has'
 import getPropertyValue from '@/helpers/formatters/getPropertyValue'
@@ -30,11 +31,14 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async actSignin(payload: AuthSigninReqInterface): Promise<AuthSigninResType> {
+    async actSignin(
+      payload: AuthSigninReqInterface,
+      ambient: AuthAmbientType = 'client',
+    ): Promise<AuthSigninResType> {
       const AUTH_SERVICE = new AuthService()
 
       try {
-        const { data } = await AUTH_SERVICE.signin(payload)
+        const { data } = await AUTH_SERVICE.signin(payload, ambient)
         this.token = data.accessToken || null
         return data
       } catch (err) {
@@ -49,6 +53,8 @@ export const useAuthStore = defineStore('auth', {
           return response
         },
         (error: AxiosError) => {
+          if (!this.token) return Promise.reject(error)
+
           const { response } = error
           const { statusCode, message } = response?.data as unknown as {
             statusCode?: number
@@ -60,8 +66,9 @@ export const useAuthStore = defineStore('auth', {
               message &&
               statusCode === HttpStatusCode.NotFound &&
               message === 'User not found')
-          )
+          ) {
             this.$reset()
+          }
           return Promise.reject(error)
         },
       )

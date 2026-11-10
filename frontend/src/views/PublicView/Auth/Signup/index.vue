@@ -85,8 +85,10 @@ function onFormSubmit({ valid, values }: FormSubmitEvent) {
     </template>
 
     <template #title>
-      <h2 class="text-2xl font-bold text-slate-900 text-center">Cadastro</h2>
-      <h5 class="text-lg font-semibold text-slate-700 text-center">UTF-Store Admin Dashboard</h5>
+      <h2 class="text-2xl font-bold text-slate-900 text-center">Criar conta</h2>
+      <h5 class="text-sm font-medium text-slate-500 text-center mt-1">
+        Junte-se à comunidade UTF-Store
+      </h5>
     </template>
 
     <template #content>
