@@ -14,7 +14,7 @@ export class SignupDto {
     example: "example",
   })
   @IsString({ message: "O nome precisa ser uma string" })
-  @IsNotEmpty({ message: "O nome não pode estar vázio" })
+  @IsNotEmpty({ message: "O nome não pode estar vazio" })
   name: string;
 
   @ApiProperty({
@@ -22,15 +22,14 @@ export class SignupDto {
       "Endereço de e-mail institucional de aluno da UTFPR (deve terminar com @alunos.utfpr.edu.br)",
     example: "example@alunos.utfpr.edu.br",
   })
-  @IsString({ message: "O email precisa ser uma string" })
-  @IsNotEmpty({ message: "O email não pode estar vázio" })
+  @IsString({ message: "O e-mail precisa ser uma string" })
+  @IsNotEmpty({ message: "O e-mail não pode estar vazio" })
   @IsEmail(
     {
       host_whitelist: [/^alunos\.utfpr\.edu\.br$/i],
     },
     {
-      message:
-        "O email precisa ser institucional de aluno da UTFPR (alunos.utfpr.edu.br)",
+      message: "E-mail inválido. Use um endereço @alunos.utfpr.edu.br.",
     },
   )
   email: string;
@@ -41,7 +40,7 @@ export class SignupDto {
     minLength: 6,
   })
   @IsString({ message: "A senha precisa ser uma string" })
-  @IsNotEmpty({ message: "A senha não pode estar vázio" })
+  @IsNotEmpty({ message: "A senha não pode estar vazia" })
   @MinLength(6, { message: "A senha precisa ter no mínimo 6 caracteres" })
   password: string;
 
@@ -50,7 +49,7 @@ export class SignupDto {
     example: "Engenharia de Software",
   })
   @IsString({ message: "O curso precisa ser uma string" })
-  @IsNotEmpty({ message: "O curso não pode estar vázio" })
+  @IsNotEmpty({ message: "O curso não pode estar vazio" })
   course: string;
 
   @ApiProperty({
@@ -58,7 +57,7 @@ export class SignupDto {
     example: "Dois Vizinhos",
   })
   @IsString({ message: "O campus precisa ser uma string" })
-  @IsNotEmpty({ message: "O campus não pode estar vázio" })
+  @IsNotEmpty({ message: "O campus não pode estar vazio" })
   campus: string;
 
   @ApiPropertyOptional({
@@ -77,7 +76,7 @@ export class SignupDto {
   })
   @IsString({ message: "A bio precisa ser uma string" })
   @IsNotEmpty({
-    message: "A bio não pode estar vázia. Fale um pouco sobre você.",
+    message: "A bio não pode estar vazia. Fale um pouco sobre você.",
   })
   @MinLength(25, { message: "A bio precisa ter no mínimo 25 caracteres" })
   bio: string;

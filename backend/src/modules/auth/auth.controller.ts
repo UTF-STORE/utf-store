@@ -18,7 +18,7 @@ export class AuthController {
     name: "ambient",
     required: false,
     description:
-      'Ambiente de login: "admin" (web) ou "client" (mobile). Opcional.',
+      'Ambiente de login: "admin" (painel administrativo) ou "client" (área do estudante). Opcional.',
     example: "admin",
   })
   @ApiResponse({
@@ -34,7 +34,7 @@ export class AuthController {
   @ApiResponse({
     status: 401,
     description:
-      "Credenciais inválidas (e-mail ou senha incorretos) ou ambiente não autorizado para este usuário.",
+      "Credenciais inválidas (e-mail ou senha incorretos) ou conta sem permissão para o ambiente informado.",
   })
   signin(@Body() signinDto: SigninDto, @Headers("ambient") ambient?: string) {
     return this.authService.signin(signinDto, ambient);
