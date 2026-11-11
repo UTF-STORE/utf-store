@@ -24,11 +24,10 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new UnauthorizedException("Invalid Credentials");
+    if (!user) throw new UnauthorizedException("Conta não encontrada.");
 
     const isPasswordValid = await compare(password, user.password);
-    if (!isPasswordValid)
-      throw new UnauthorizedException("Invalid Credentials");
+    if (!isPasswordValid) throw new UnauthorizedException("Senha incorreta.");
 
     if (ambient === "admin" && user.role !== "admin") {
       throw new UnauthorizedException(

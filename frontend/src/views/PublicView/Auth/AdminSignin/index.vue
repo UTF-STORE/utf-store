@@ -28,14 +28,14 @@ const resolver = zodResolver(
   z.object({
     email: z
       .string()
-      .nonempty({ error: 'Email é obrigatório' })
+      .nonempty({ error: 'E-mail é obrigatório' })
       .refine((val) => isUtfprStudentEmail(val), {
-        message: 'O email precisa ser institucional da UTFPR',
+        message: 'E-mail inválido. Use um endereço @utfpr.edu.br.',
       }),
     password: z
       .string()
       .nonempty({ error: 'Senha é obrigatória' })
-      .min(6, { error: 'A senha deve conter no mínimo 6 caracteres' }),
+      .min(6, { error: 'A senha deve ter no mínimo 6 caracteres' }),
   }),
 )
 
@@ -78,7 +78,7 @@ function onFormSubmit({ valid, values }: FormSubmitEvent) {
   <AuthLayout
     kicker="Administração"
     title="Acesso administrativo"
-    subtitle="Entre com sua conta de administrador para gerenciar a UTF-Store."
+    subtitle="Gerencie usuários e anúncios da UTF-Store."
   >
     <template #brand>
       <div class="relative">
@@ -104,7 +104,7 @@ function onFormSubmit({ valid, values }: FormSubmitEvent) {
         initialValue=""
         class="flex flex-col gap-2"
       >
-        <InputText type="email" placeholder="E-mail institucional" class="w-full" />
+        <InputText type="email" placeholder="nome@utfpr.edu.br" class="w-full" />
         <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{
           $field.error?.message
         }}</Message>
@@ -132,7 +132,9 @@ function onFormSubmit({ valid, values }: FormSubmitEvent) {
         class="mt-2 w-full rounded-xl border-none bg-slate-900 py-3 text-white hover:bg-slate-800"
       />
 
-      <div class="mt-2 text-center">
+      <div
+        class="mt-2 flex min-h-[3.25rem] flex-col items-center justify-center text-center max-[374px]:min-h-[4.5rem]"
+      >
         <RouterLink
           :to="{ name: 'public.auth.signin' }"
           class="text-sm font-medium text-slate-500 transition-colors hover:text-slate-700"
