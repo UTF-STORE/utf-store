@@ -28,10 +28,14 @@ defineProps<Props>()
 
     <div class="flex min-w-0 flex-1 flex-col justify-center p-6 sm:p-10 lg:p-12">
       <div class="mb-8 text-center max-[340px]:min-h-[7.75rem] lg:text-left">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 sm:tracking-[0.3em]">
+        <p
+          class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 sm:tracking-[0.3em]"
+        >
           {{ kicker }}
         </p>
-        <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">{{ title }}</h2>
+        <h2 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+          {{ title }}
+        </h2>
         <p class="mt-1 text-sm text-slate-500">{{ subtitle }}</p>
       </div>
 
