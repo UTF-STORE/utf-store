@@ -11,6 +11,9 @@ import listingRoutes from '@/router/client/listingRoutes'
 
 const PublicView = () => import('@/views/PublicView/index.vue')
 const PrivateView = () => import('@/views/PrivateView/index.vue')
+const AdminSigninView = () => import('@/views/PublicView/Auth/AdminSignin/index.vue')
+
+const ADMIN_LOGIN_ROUTE_NAME = 'admin.auth.signin'
 
 const isAuthenticated = (): boolean => {
   const authStore = useAuthStore()
@@ -54,6 +57,18 @@ const router = createRouter({
     },
 
     {
+      path: '/admin/login',
+      component: PublicView,
+      children: [
+        {
+          path: '',
+          name: ADMIN_LOGIN_ROUTE_NAME,
+          component: AdminSigninView,
+        },
+      ],
+    },
+
+    {
       path: '/admin',
       name: 'admin',
       component: PrivateView,
@@ -80,7 +95,7 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const authStore = useAuthStore()
-  const isPublicRoute = to.path.startsWith('/public')
+  const isPublicRoute = to.path.startsWith('/public') || to.name === ADMIN_LOGIN_ROUTE_NAME
   const requiresAuthentication = to.matched.some((route) => route.meta.role)
 
   if (!authStore.token) {
