@@ -5,6 +5,7 @@ interface Props {
   kicker: string
   title: string
   subtitle: string
+  wide?: boolean
 }
 
 defineProps<Props>()
@@ -12,10 +13,12 @@ defineProps<Props>()
 
 <template>
   <section
-    class="flex w-full min-w-0 max-w-5xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] lg:flex-row"
+    class="flex w-full min-w-0 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)]"
+    :class="wide ? 'max-w-6xl xl:flex-row' : 'max-w-5xl lg:flex-row'"
   >
     <aside
-      class="relative hidden flex-col justify-between overflow-hidden bg-slate-900 p-10 text-white lg:flex lg:w-[46%] lg:shrink-0"
+      class="relative hidden flex-col justify-between overflow-hidden bg-slate-900 p-10 text-white"
+      :class="wide ? 'xl:flex xl:w-[40%] xl:shrink-0' : 'lg:flex lg:w-[46%] lg:shrink-0'"
     >
       <div
         class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl"
@@ -26,8 +29,14 @@ defineProps<Props>()
       <slot name="brand" />
     </aside>
 
-    <div class="flex min-w-0 flex-1 flex-col justify-center p-6 sm:p-10 lg:p-12">
-      <div class="mb-8 text-center max-[340px]:min-h-[7.75rem] lg:text-left">
+    <div
+      class="flex min-w-0 flex-1 flex-col justify-center"
+      :class="wide ? 'p-[1.5rem] sm:p-[2rem] lg:p-[2.5rem]' : 'p-6 sm:p-10 lg:p-12'"
+    >
+      <div
+        class="text-center max-[340px]:min-h-[7.75rem]"
+        :class="wide ? 'mb-[1.5rem] xl:text-left' : 'mb-8 lg:text-left'"
+      >
         <p
           class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 sm:tracking-[0.3em]"
         >

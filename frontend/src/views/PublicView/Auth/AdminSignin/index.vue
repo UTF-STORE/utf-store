@@ -17,7 +17,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
 import type AuthSigninReqInterface from '@/domain/auth/types/req/AuthSigninReqInterface'
 import getAuthErrorMessage from '@/helpers/formatters/getAuthErrorMessage'
-import { isUtfprStudentEmail } from '@utf-store/shared'
+import { isUtfprEmail } from '@utf-store/shared'
 
 const toast = useToast()
 const authStore = useAuthStore()
@@ -29,7 +29,7 @@ const resolver = zodResolver(
     email: z
       .string()
       .nonempty({ error: 'E-mail é obrigatório' })
-      .refine((val) => isUtfprStudentEmail(val), {
+      .refine((val) => isUtfprEmail(val), {
         message: 'E-mail inválido. Use um endereço @utfpr.edu.br.',
       }),
     password: z
