@@ -2,6 +2,7 @@ import type { AxiosPromise } from 'axios'
 
 import ListingRepository from '@/domain/listing/ListingRepository'
 import type ListingFindAllResInterface from '@/domain/listing/types/res/ListingFindAllResInterface'
+import type ListingFindAllReqInterface from '@/domain/listing/types/req/ListingFindAllReqInterface'
 import type ListingFindOneResInterface from '@/domain/listing/types/res/ListingFindOneResInterface'
 
 export default class ListingService {
@@ -9,6 +10,10 @@ export default class ListingService {
 
   findAll(): AxiosPromise<ListingFindAllResInterface> {
     return this._repository.findAll()
+  }
+
+  findPublic(params: ListingFindAllReqInterface): AxiosPromise<ListingFindAllResInterface> {
+    return this._repository.findPublic(params)
   }
 
   findOne(id: string): AxiosPromise<ListingFindOneResInterface> {

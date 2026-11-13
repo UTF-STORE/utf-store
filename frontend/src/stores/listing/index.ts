@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import ListingService from '@/domain/listing/ListingService'
+import type ListingFindAllReqInterface from '@/domain/listing/types/req/ListingFindAllReqInterface'
 
 export const useListingStore = defineStore('listing', {
   actions: {
@@ -9,6 +10,17 @@ export const useListingStore = defineStore('listing', {
 
       try {
         const { data } = await LISTING_SERVICE.findAll()
+        return data
+      } catch (err) {
+        throw err
+      }
+    },
+
+    async actFindPublicListings(params: ListingFindAllReqInterface) {
+      const LISTING_SERVICE = new ListingService()
+
+      try {
+        const { data } = await LISTING_SERVICE.findPublic(params)
         return data
       } catch (err) {
         throw err
