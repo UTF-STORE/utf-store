@@ -237,9 +237,9 @@ onMounted(fetchCategories)
 </script>
 
 <template>
-  <section class="max-w-3xl mx-auto space-y-6">
+  <section class="max-w-5xl mx-auto space-y-4">
     <header
-      class="flex items-center justify-between bg-white rounded-2xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
+      class="flex items-center justify-between bg-white rounded-2xl px-4 py-4 sm:px-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
     >
       <div>
         <h1 class="text-xl font-bold text-slate-900 tracking-tight">Novo Anúncio</h1>
@@ -252,26 +252,26 @@ onMounted(fetchCategories)
         icon="pi pi-arrow-left"
         severity="secondary"
         outlined
-        class="rounded-xl"
+        class="shrink-0 rounded-xl"
         @click="goToAds"
       />
     </header>
 
     <div
-      class="bg-white rounded-2xl p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
+      class="bg-white rounded-2xl p-4 sm:p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
     >
-      <form class="space-y-5" @submit.prevent="onSubmit">
+      <form class="space-y-4" @submit.prevent="onSubmit">
         <div class="flex flex-col gap-1.5">
           <label for="title" class="text-sm font-semibold text-slate-700">Título do Anúncio</label>
           <InputText
             id="title"
             v-model="form.title"
             placeholder="Ex: Notebook Gamer"
-            class="w-full rounded-xl bg-slate-50 border-slate-200 px-4 py-3 text-slate-700"
+            class="w-full h-12 rounded-xl bg-slate-50 border-slate-200 px-4 text-slate-700"
           />
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid! grid-cols-1! gap-4! sm:grid-cols-2! lg:grid-cols-3!">
           <div class="flex flex-col gap-1.5">
             <label for="price" class="text-sm font-semibold text-slate-700">Preço (R$)</label>
             <InputText
@@ -281,7 +281,7 @@ onMounted(fetchCategories)
               step="0.01"
               min="0"
               placeholder="0,00"
-              class="w-full rounded-xl bg-slate-50 border-slate-200 px-4 py-3 text-slate-700"
+              class="w-full h-12 rounded-xl bg-slate-50 border-slate-200 px-4 text-slate-700"
             />
           </div>
 
@@ -295,12 +295,9 @@ onMounted(fetchCategories)
               option-label="label"
               option-value="value"
               placeholder="Selecione a categoria"
-              class="w-full rounded-xl bg-slate-50 border-slate-200"
+              class="w-full h-12 items-center rounded-xl bg-slate-50 border-slate-200"
             />
           </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="flex flex-col gap-1.5">
             <label for="type" class="text-sm font-semibold text-slate-700">Tipo</label>
             <Select
@@ -309,7 +306,7 @@ onMounted(fetchCategories)
               :options="typeOptions"
               option-label="label"
               option-value="value"
-              class="w-full rounded-xl bg-slate-50 border-slate-200"
+              class="w-full h-12 items-center rounded-xl bg-slate-50 border-slate-200"
             />
           </div>
 
@@ -321,17 +318,17 @@ onMounted(fetchCategories)
               :options="conditionOptions"
               option-label="label"
               option-value="value"
-              class="w-full rounded-xl bg-slate-50 border-slate-200"
+              class="w-full h-12 items-center rounded-xl bg-slate-50 border-slate-200"
             />
           </div>
 
-          <div class="flex flex-col gap-1.5">
+          <div class="flex flex-col gap-1.5 sm:col-span-2">
             <label for="location" class="text-sm font-semibold text-slate-700">Localização</label>
             <InputText
               id="location"
               v-model="form.location"
               placeholder="Ex: Dois Vizinhos, PR"
-              class="w-full rounded-xl bg-slate-50 border-slate-200 px-4 py-3 text-slate-700"
+              class="w-full h-12 rounded-xl bg-slate-50 border-slate-200 px-4 text-slate-700"
             />
           </div>
         </div>
@@ -341,7 +338,7 @@ onMounted(fetchCategories)
           <Textarea
             id="description"
             v-model="form.description"
-            rows="4"
+            rows="3"
             placeholder="Descreva os detalhes..."
             class="w-full rounded-xl bg-slate-50 border-slate-200 p-4 text-slate-700"
           />
@@ -364,7 +361,7 @@ onMounted(fetchCategories)
 
           <button
             type="button"
-            class="flex flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-slate-500 transition-colors hover:border-slate-400 hover:text-slate-700"
+            class="flex flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-4 text-slate-500 transition-colors hover:border-slate-400 hover:text-slate-700"
             @click="openFilePicker"
           >
             <i class="pi pi-image text-2xl" />
@@ -428,7 +425,7 @@ onMounted(fetchCategories)
             label="Salvar Anúncio"
             icon="pi pi-check"
             :loading="loading"
-            class="rounded-xl px-6"
+            class="rounded-xl px-6 whitespace-nowrap"
           />
         </div>
       </form>
