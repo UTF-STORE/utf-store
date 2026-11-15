@@ -29,7 +29,7 @@ jobs:
           - ambiente: production
             url: https://utf-store.up.railway.app
           - ambiente: staging
-            url: https://frontend-staging-9dcb.up.railway.app
+            url: https://utf-store-staging.up.railway.app
     env:
       APP_URL: ${{ matrix.url }}
     steps:

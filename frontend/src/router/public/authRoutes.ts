@@ -15,8 +15,8 @@ export default [
       },
 
       /**
-       * NOTE: Tirando rota de cadastro, pois não é necessário para o MVP na WEB.
-       * Caso seja necessário, descomentar o trecho abaixo e adicionar o botão "Cadastrar" na tela de login.
+       * Cadastro público exclusivo para estudantes da UTFPR.
+       * Contas administrativas são criadas internamente e não possuem autocadastro.
        */
       {
         path: 'signup',

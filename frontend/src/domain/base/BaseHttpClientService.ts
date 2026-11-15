@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance, type CreateAxiosDefaults } from 'axios'
 import { useAuthStore } from '@/stores/auth'
+import type { AuthAmbientType } from '@/domain/auth/types/AuthAmbientType'
 
 export default class BaseHttpClientService {
   protected _store
@@ -12,18 +13,18 @@ export default class BaseHttpClientService {
     return axios.create(config)
   }
 
-  public getBackClient(): AxiosInstance {
-    return this.getClient(import.meta.env.VITE_API_URL, this._store.token || '')
+  public getBackClient(ambient: AuthAmbientType = 'client'): AxiosInstance {
+    return this.getClient(import.meta.env.VITE_API_URL, this._store.token || '', ambient)
   }
 
-  private getClient(baseURL: string, token: string): AxiosInstance {
+  private getClient(baseURL: string, token: string, ambient: AuthAmbientType): AxiosInstance {
     const config: CreateAxiosDefaults = {
       baseURL,
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         Authorization: `Bearer ${token}`,
-        ambient: 'client',
+        ambient,
       },
     }
 

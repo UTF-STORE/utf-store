@@ -15,6 +15,22 @@ export default class ListingService {
     return this._repository.findOne(id)
   }
 
+  findCategories(): AxiosPromise {
+    return this._repository.findCategories()
+  }
+
+  create(payload: Record<string, unknown>): AxiosPromise {
+    return this._repository.create(payload)
+  }
+
+  addImage(
+    listingId: string,
+    image: File,
+    options: { isCover: boolean; position: number },
+  ): AxiosPromise {
+    return this._repository.addImage(listingId, image, options)
+  }
+
   delete(id: string): AxiosPromise {
     return this._repository.delete(id)
   }

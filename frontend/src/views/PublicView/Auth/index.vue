@@ -3,7 +3,7 @@ defineOptions({ name: 'PublicAuthView' })
 </script>
 
 <template>
-  <div class="flex min-h-[calc(100vh-3rem)] items-center justify-center">
+  <div class="flex w-full min-w-0 items-center justify-center">
     <RouterView />
   </div>
 </template>

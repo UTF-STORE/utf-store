@@ -24,15 +24,20 @@ export class AuthService {
       },
     });
 
-    if (!user) throw new UnauthorizedException("Invalid Credentials");
+    if (!user) throw new UnauthorizedException("Conta não encontrada.");
 
     const isPasswordValid = await compare(password, user.password);
-    if (!isPasswordValid)
-      throw new UnauthorizedException("Invalid Credentials");
+    if (!isPasswordValid) throw new UnauthorizedException("Senha incorreta.");
 
     if (ambient === "admin" && user.role !== "admin") {
       throw new UnauthorizedException(
-        `Access denied. This user is a '${user.role}', not an '${ambient}'.`,
+        "Esta conta não possui permissão para acessar o painel administrativo.",
+      );
+    }
+
+    if (ambient === "client" && user.role !== "client") {
+      throw new UnauthorizedException(
+        "Esta conta não possui permissão para acessar a área do estudante.",
       );
     }
 
