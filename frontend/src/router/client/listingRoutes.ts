@@ -4,7 +4,7 @@ export default [
   {
     path: 'listings',
     name: 'client.listings',
-    component: () => import('@/views/PrivateView/Listings/listingView.vue'),
+    redirect: { name: 'client.home' },
     meta: { role: 'client' },
   },
 ] as Array<RouteRecordRaw>
