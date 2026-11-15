@@ -1,12 +1,13 @@
 import type { RouteRecordRaw } from 'vue-router'
 import ClientPlaceholder from '@/views/PrivateView/ClientPlaceholder/index.vue'
+import ClientExplore from '@/views/PrivateView/Explore/index.vue'
 import ClientProfile from '@/views/PrivateView/Profile/index.vue'
 
 export default [
   {
     path: 'home',
     name: 'client.home',
-    component: ClientPlaceholder,
+    component: ClientExplore,
     meta: { role: 'client' },
   },
   {
