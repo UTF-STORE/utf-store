@@ -8,6 +8,7 @@ import userRoutes from '@/router/admin/userRoutes'
 import adsRoutes from '@/router/admin/adsRoutes'
 import clientRoutes from '@/router/client/clientRoutes'
 import listingRoutes from '@/router/client/listingRoutes'
+import chatRoutes from '@/router/client/chatRoutes'
 
 const PublicView = () => import('@/views/PublicView/index.vue')
 const PrivateView = () => import('@/views/PrivateView/index.vue')
@@ -83,7 +84,7 @@ const router = createRouter({
       component: PrivateView,
       redirect: '/app/home',
       meta: { role: 'client' },
-      children: [...listingRoutes, ...clientRoutes],
+      children: [...listingRoutes, ...clientRoutes, ...chatRoutes],
     },
 
     {
