@@ -2,6 +2,7 @@
 defineOptions({ name: 'ClientExplore' })
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { useToast } from 'primevue/usetoast'
 import DataView from 'primevue/dataview'
@@ -16,6 +17,7 @@ import Divider from 'primevue/divider'
 import Carousel from 'primevue/carousel'
 
 import { useListingStore } from '@/stores/listing'
+import { useUserStore } from '@/stores/user'
 import type ListingInterface from '@/domain/listing/types/ListingInterface'
 import type ListingCategoriesResInterface from '@/domain/listing/types/res/ListingCategoriesResInterface'
 import type { ListingCategoryNodeInterface } from '@/domain/listing/types/res/ListingCategoriesResInterface'
@@ -25,7 +27,9 @@ const SEARCH_DEBOUNCE_MS = 400
 const PAGE_SIZE = 12
 
 const toast = useToast()
+const router = useRouter()
 const listingStore = useListingStore()
+const userStore = useUserStore()
 
 const typeOptions = [
   { label: 'Venda', value: 'SELL' },
@@ -238,6 +242,18 @@ async function openDetails(listing: ListingInterface): Promise<void> {
   } finally {
     detailLoading.value = false
   }
+}
+
+function startChat(listing: ListingInterface): void {
+  detailsVisible.value = false
+
+  router.push({
+    name: 'client.chat.conversation',
+    params: {
+      listingId: listing.id,
+      contactId: listing.sellerId,
+    },
+  })
 }
 </script>
 
@@ -527,6 +543,21 @@ async function openDetails(listing: ListingInterface): Promise<void> {
           </div>
         </dl>
       </div>
+
+      <template #footer>
+        <div
+          v-if="selectedAd"
+          class="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end"
+        >
+          <Button label="Fechar" severity="secondary" text @click="detailsVisible = false" />
+          <Button
+            v-if="selectedAd.sellerId !== userStore.user?.id"
+            label="Conversar com o anunciante"
+            icon="pi pi-comments"
+            @click="startChat(selectedAd)"
+          />
+        </div>
+      </template>
     </Dialog>
   </section>
 </template>

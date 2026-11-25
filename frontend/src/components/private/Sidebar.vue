@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineOptions({ name: 'CompPrivateSidebar' })
 
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import Drawer from 'primevue/drawer'
 import { useConfirm } from 'primevue'
 
@@ -24,6 +24,7 @@ interface Props {
 }
 
 const confirm = useConfirm()
+const route = useRoute()
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
@@ -33,6 +34,10 @@ const emit = defineEmits<{
 
 function closeSidebar(): void {
   emit('update:open', false)
+}
+
+function isItemActive(to: string, isActive: boolean): boolean {
+  return isActive || route.path === to || route.path.startsWith(`${to}/`)
 }
 
 function confirmLogout(event: Event) {
@@ -85,7 +90,7 @@ function confirmLogout(event: Event) {
             @click="navigate"
             class="group flex items-center gap-3 rounded-xl px-4 py-3 transition-colors"
             :class="
-              isActive
+              isItemActive(item.to, isActive)
                 ? 'bg-slate-100 text-slate-900 font-semibold'
                 : 'bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
             "
@@ -142,7 +147,7 @@ function confirmLogout(event: Event) {
             "
             class="group flex items-center gap-3 rounded-xl px-4 py-3 transition-colors"
             :class="
-              isActive
+              isItemActive(item.to, isActive)
                 ? 'bg-slate-100 text-slate-900 font-semibold'
                 : 'bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
             "
