@@ -154,7 +154,10 @@ function applyProfile(user: UserMeResInterface['me']): void {
         <h2 class="text-base font-semibold text-slate-900">Dados pessoais</h2>
 
         <div class="mt-3 grid gap-x-4 gap-y-3 sm:grid-cols-2">
-          <label class="flex flex-col gap-1.5 text-sm font-medium text-slate-700" for="profile-name">
+          <label
+            class="flex flex-col gap-1.5 text-sm font-medium text-slate-700"
+            for="profile-name"
+          >
             Nome
             <InputText id="profile-name" v-model="profile.name" required maxlength="120" />
           </label>
