@@ -28,6 +28,7 @@ const adminNavigation = [
 
 const clientNavigation = [
   { label: 'Explorar', icon: 'pi pi-home', to: '/app/home' },
+  { label: 'Mensagens', icon: 'pi pi-comments', to: '/app/chat' },
   { label: 'Favoritos', icon: 'pi pi-heart', to: '/app/favorites' },
   { label: 'Meu perfil', icon: 'pi pi-user-edit', to: '/app/profile' },
 ]
