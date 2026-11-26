@@ -8,4 +8,10 @@ export class RecommendationResponseDto {
       "Lista de anúncios ordenados por relevância e inteligência artificial",
   })
   listings: ListingDetailsResponseDto[];
+
+  @ApiProperty({
+    description:
+      "Indica que os anúncios foram ordenados por data por indisponibilidade do ranking de IA",
+  })
+  usedFallback: boolean;
 }

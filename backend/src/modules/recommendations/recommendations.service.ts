@@ -136,6 +136,7 @@ export class RecommendationsService {
 
     return {
       listings: orderedListings,
+      usedFallback: !ranking?.orderedListingIds?.length,
     };
   }
 

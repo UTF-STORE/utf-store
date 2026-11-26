@@ -16,6 +16,10 @@ export default class ListingRepository extends BaseRepository {
     return this._httpClient.getBackClient().get(`/${this._model.name}`, { params })
   }
 
+  findRecommendations(): AxiosPromise<ListingFindAllResInterface> {
+    return this._httpClient.getBackClient().get('/recommendations/listings')
+  }
+
   findOne(id: string): AxiosPromise<ListingFindOneResInterface> {
     return this._httpClient.getBackClient().get(`/${this._model.name}/${id}`)
   }

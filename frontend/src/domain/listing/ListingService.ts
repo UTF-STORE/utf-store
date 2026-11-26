@@ -16,6 +16,10 @@ export default class ListingService {
     return this._repository.findPublic(params)
   }
 
+  findRecommendations(): AxiosPromise<ListingFindAllResInterface> {
+    return this._repository.findRecommendations()
+  }
+
   findOne(id: string): AxiosPromise<ListingFindOneResInterface> {
     return this._repository.findOne(id)
   }

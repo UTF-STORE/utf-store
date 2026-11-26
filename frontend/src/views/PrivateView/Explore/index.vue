@@ -155,6 +155,9 @@ async function fetchCategories(): Promise<void> {
 const listings = ref<ListingInterface[]>([])
 const loading = ref(false)
 const first = ref(0)
+const recommendedListings = ref<ListingInterface[]>([])
+const recommendationsLoading = ref(false)
+const recommendationsFallback = ref(false)
 
 let lastRequestId = 0
 
@@ -198,6 +201,28 @@ async function fetchListings(): Promise<void> {
   }
 }
 
+async function fetchRecommendations(): Promise<void> {
+  recommendationsLoading.value = true
+  recommendationsFallback.value = false
+
+  try {
+    const { listings: recommendations, usedFallback } = await listingStore.actFindRecommendations()
+
+    if (recommendations.length > 0) {
+      recommendedListings.value = recommendations.slice(0, 4)
+      recommendationsFallback.value = usedFallback ?? false
+      return
+    }
+  } catch {
+    recommendationsFallback.value = true
+  }
+
+  recommendationsFallback.value = true
+  recommendedListings.value = [...listings.value]
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 4)
+}
+
 let searchTimer: ReturnType<typeof setTimeout> | undefined
 
 watch(search, () => {
@@ -210,9 +235,11 @@ watch([typeFilter, conditionFilter, statusFilter, selectedParentId, selectedChil
   fetchListings()
 })
 
-onMounted(() => {
+onMounted(async () => {
   fetchCategories()
-  fetchListings()
+  await fetchListings()
+  await fetchRecommendations()
+  recommendationsLoading.value = false
 })
 
 onBeforeUnmount(() => clearTimeout(searchTimer))
@@ -372,6 +399,88 @@ function startChat(listing: ListingInterface): void {
         />
       </div>
     </div>
+
+    <section
+      aria-labelledby="recommendations-title"
+      class="bg-white rounded-2xl p-4 sm:p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
+    >
+      <div class="mb-5">
+        <h2 id="recommendations-title" class="text-lg font-bold text-slate-900">
+          Recomendados para você
+        </h2>
+        <p class="mt-0.5 text-sm text-slate-500">
+          {{
+            recommendationsFallback
+              ? 'Exibindo os anúncios mais recentes.'
+              : 'Sugestões selecionadas de acordo com o seu perfil.'
+          }}
+        </p>
+      </div>
+
+      <div
+        v-if="recommendationsLoading"
+        class="flex items-center justify-center gap-2 py-12 text-slate-500"
+      >
+        <i class="pi pi-spin pi-spinner text-2xl" />
+        <span>Carregando recomendações...</span>
+      </div>
+
+      <div v-else-if="recommendedListings.length === 0" class="py-12 text-center text-slate-500">
+        Nenhum anúncio disponível para recomendação.
+      </div>
+
+      <div v-else class="grid! grid-cols-1! gap-6 sm:grid-cols-2! lg:grid-cols-4!">
+        <article
+          v-for="ad in recommendedListings"
+          :key="ad.id"
+          role="button"
+          tabindex="0"
+          class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white transition hover:shadow-md"
+          @click="openDetails(ad)"
+          @keydown.enter="openDetails(ad)"
+          @keydown.space.prevent="openDetails(ad)"
+        >
+          <div class="relative h-48 overflow-hidden bg-slate-50 p-4">
+            <img
+              v-if="coverImage(ad)"
+              :src="coverImage(ad)"
+              :alt="ad.title"
+              loading="lazy"
+              class="h-full w-full object-cover rounded-xl transition duration-300 group-hover:scale-105"
+            />
+            <div v-else class="flex h-full w-full items-center justify-center text-slate-300">
+              <i class="pi pi-image text-3xl" />
+            </div>
+          </div>
+
+          <div class="flex flex-1 flex-col p-5">
+            <h3 class="font-bold text-slate-900 text-lg tracking-tight line-clamp-1">
+              {{ ad.title }}
+            </h3>
+            <p class="mt-1 font-semibold text-slate-700">{{ formatPrice(ad) }}</p>
+            <div class="mt-2 flex flex-wrap gap-1.5">
+              <Tag :value="typeLabel(ad.type)" severity="secondary" />
+              <Tag :value="conditionLabel(ad.condition)" severity="secondary" />
+            </div>
+            <p v-if="ad.location" class="mt-3 line-clamp-1 text-xs font-medium text-slate-500">
+              <i class="pi pi-map-marker mr-1 text-[10px]" />{{ ad.location }}
+            </p>
+            <div class="mt-auto pt-4">
+              <div class="border-t border-slate-100 pt-4 flex items-center justify-between">
+                <span class="line-clamp-1 text-xs font-bold text-slate-700">
+                  {{ ad.seller.name }}
+                </span>
+                <span
+                  class="ml-2 line-clamp-1 shrink-0 text-[10px] uppercase font-bold text-slate-400"
+                >
+                  {{ ad.category.name }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
 
     <div
       class="bg-white rounded-2xl p-4 sm:p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-slate-100"
