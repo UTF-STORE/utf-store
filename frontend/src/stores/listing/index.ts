@@ -27,6 +27,17 @@ export const useListingStore = defineStore('listing', {
       }
     },
 
+    async actFindRecommendations() {
+      const LISTING_SERVICE = new ListingService()
+
+      try {
+        const { data } = await LISTING_SERVICE.findRecommendations()
+        return data
+      } catch (err) {
+        throw err
+      }
+    },
+
     async actFindOneListing(id: string) {
       const LISTING_SERVICE = new ListingService()
 
